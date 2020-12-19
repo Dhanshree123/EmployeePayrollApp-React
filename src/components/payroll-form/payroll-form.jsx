@@ -1,4 +1,3 @@
-// import React, {userState,userEffect} from 'react';
 import React, {Component} from 'react'
 import profile1 from '../../assets/profile-images/Ellipse -3.png';
 import profile2 from '../../assets/profile-images/Ellipse 1.png';
@@ -16,7 +15,7 @@ class PayrollForm extends Component{
         this.state={
             name: '',
             salary: '',
-            notes: '',
+            note: '',
             day: '1',
             month: 'Jan',
             year: '2020',
@@ -26,7 +25,7 @@ class PayrollForm extends Component{
         }
         this.changeNameHandler=this.changeNameHandler.bind(this);
         this.changeSalaryHandler=this.changeSalaryHandler.bind(this);
-        this.changeNotesHandler=this.changeNotesHandler.bind(this);
+        this.changeNoteHandler=this.changeNoteHandler.bind(this);
         this.changeGenderHandler=this.changeGenderHandler.bind(this);
         this.changeDayHandler=this.changeDayHandler.bind(this);
         this.changeMonthHandler=this.changeMonthHandler.bind(this);
@@ -35,14 +34,14 @@ class PayrollForm extends Component{
     }
     saveOrUpdateEmployee = (event) => {
         event.preventDefault();
-        console.log(this.state.departments);
+       // console.log(this.state.departments);
         let employee = {
             name: this.state.name,
             departments : this.state.departments,
             gender: this.state.gender,
             salary: this.state.salary,
-            startDate: `${this.state.day} ${this.state.month} ${this.state.year}`,
-            notes: this.state.notes,
+            startDate: `${this.state.year}-${this.state.month}-${this.state.day}`,
+            note: this.state.note,
             profilePic: this.state.profilePic,
           };
         console.log('employee => ' + JSON.stringify(employee));
@@ -64,36 +63,36 @@ class PayrollForm extends Component{
     }
     changeNameHandler =(event)=>{
         this.setState({name:event.target.value});
-        console.log("name is "+this.state.name);
+        //console.log("name is "+this.state.name);
     }
     changeSalaryHandler =(event)=>{
         this.setState({salary:event.target.value});
-        console.log("salary chosen is"+this.state.salary);
+        //console.log("salary chosen is"+this.state.salary);
     }
-    changeNotesHandler =(event)=>{
-        this.setState({notes: event.target.value});
-        console.log("notes entered is "+this.state.notes);
+    changeNoteHandler =(event)=>{
+        this.setState({note: event.target.value});
+        //console.log("note entered is "+this.state.note);
     }
     changeGenderHandler =(event)=>{
 
         this.setState({gender: event.target.value});
-        console.log("gender is" + this.state.gender);
+        //console.log("gender is" + this.state.gender);
     }
     changeProfilePicHandler =(event)=>{
         this.setState({profilePic: event.target.value});
-        console.log("profilepic is "+this.state.profilePic);
+       // console.log("profilepic is "+this.state.profilePic);
     }
     changeDayHandler=(event)=>{
         this.setState({day:event.target.value});
-        console.log("day entered is"+this.state.day);
+       // console.log("day entered is"+this.state.day);
     }
     changeMonthHandler=(event)=>{
         this.setState({month:event.target.value});
-        console.log("month entered is"+this.state.month);
+        //console.log("month entered is"+this.state.month);
     }
     changeYearHandler=(event)=>{
         this.setState({year:event.target.value});
-        console.log("year entered is "+this.state.year);
+        //console.log("year entered is "+this.state.year);
     }
     cancel(){
         // this.props.history.push('/employees');
@@ -172,23 +171,23 @@ class PayrollForm extends Component{
                         </div>
                         <div class="row-content">
                             <label class="label text" for="salary">Choose your salary: </label>
-                            <input class="input" onChange={this.changeSalaryHandler} type="range" name="salary" id="salary" min="300000"
-                                    max="500000" step="100" value="400000"/>
-                            <output class="salary-output text" for="salary">400000</output>
+                            <input class="input" type="range" name="salary" id="salary" min="300000"
+                                    max="500000" step="100" value={this.state.salary} onChange={this.changeSalaryHandler} />
+                            <output class="salary-output text" for="salary">{this.state.salary}</output>
                         </div>
                         <div class="row-content">
                         <label class="label text" for="startDate">Start Date</label>
                         <div>
                             <select id="day" name="day" onChange={this.changeDayHandler}> 
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
+                                <option value="01">1</option>
+                                <option value="02">2</option>
+                                <option value="03">3</option>
+                                <option value="04">4</option>
+                                <option value="05">5</option>
+                                <option value="06">6</option>
+                                <option value="07">7</option>
+                                <option value="08">8</option>
+                                <option value="09">9</option>
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
@@ -213,18 +212,18 @@ class PayrollForm extends Component{
                                 <option value="31">31</option>
                             </select>
                             <select id="month" name="Month" onChange={this.changeMonthHandler}>
-                                <option value="Jan">January</option>
-                                <option value="Feb">Febuary</option>
-                                <option value="Mar">March</option>
-                                <option value="Apr">April</option>
-                                <option value="May">May</option>
-                                <option value="Jun">June</option>
-                                <option value="Jul">July</option>
-                                <option value="Aug">August</option>
-                                <option value="Sep">September</option>
-                                <option value="Oct">October</option>
-                                <option value="Nov">November</option>
-                                <option value="Dec">December</option>
+                                <option value="01">January</option>
+                                <option value="02">Febuary</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
                             </select>
                             <select id="year" name="Year" onChange={this.changeYearHandler}>
                                 <option value="2020">2020</option>
@@ -236,8 +235,8 @@ class PayrollForm extends Component{
                         </div>
                     </div>
                     <div class="row-content">
-                        <label class="label text" for="notes">Notes</label>
-                        <textarea id="notes" onChange={this.changeNotesHandler} class="input" name="Notes" placeholder="" style={{ height: '100%' }}></textarea>
+                        <label class="label text" for="note">Notes</label>
+                        <textarea id="note" onChange={this.changeNoteHandler} class="input" name="Note" placeholder="" style={{ height: '100%' }}></textarea>
                     </div>
                     <div class="buttonParent">
                         <a href="./employee_payroll_home.html" class="resetButton button cancelButton">Cancel</a>
