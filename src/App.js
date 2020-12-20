@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import Home from './components/home/home';
 
 import PayrollForm from "./components/payroll-form/payroll-form";
 import {
@@ -14,8 +15,11 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route exact path="">
+          <Route path="/add-employee" component={PayrollForm}>
             <PayrollForm />
+          </Route>
+          <Route path = "/home" component = {Home}>
+            <Home/>
           </Route>
         </Switch>
       </Router>
