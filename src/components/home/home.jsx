@@ -7,8 +7,9 @@ import './home.scss';
 import logo from '../../assets/images/logo.png';
 import deleteIcon from '../../assets/icons/delete-black-18dp.svg';
 import updateIcon from '../../assets/icons/create-black-18dp.svg'
-import {useParams,Link,withRouter} from 'react-router-dom';
+import {useParams,withRouter} from 'react-router-dom';
 import EmployeeService from '../../services/employee-service'
+import {Link} from 'react-router-dom';
 
 class Home extends Component{
     constructor(props) {
@@ -25,8 +26,6 @@ class Home extends Component{
     }
 
     componentWillMount(){
-        console.log("vcalling");
-
         EmployeeService.getEmployees().then((res) => {
             console.log(res);
             console.log("message : "+res.message);
@@ -44,7 +43,7 @@ class Home extends Component{
         });
     }
     updateEmployee(id){
-
+        this.props.history.push(`/add-employee/${id}`);
     }
 
     render(){
@@ -62,9 +61,9 @@ class Home extends Component{
                 <div class="main-content">
                     <div class="header-content">
                         <div class="emp-detail-text">
-                            Employee Details <div class="emp-count">10</div>
+                            Employee Details <div class="emp-count">{this.state.employees.length}</div>
                         </div>
-                        <Link to="/add-employee" class="add-button">
+                        <Link to="/add-employee/new" class="add-button">
                         <img src="../../assets/icons/add-24px.svg" alt=""/>Add User</Link>
                     </div>
                     <table id="table-display" class="table">
@@ -84,15 +83,15 @@ class Home extends Component{
                                     } alt="Image"/></td>
                                     <td>{employee.name}</td>
                                     <td>{employee.gender}</td>
-                                    <td>{
-                                       employee.departments.map(
-                                           dept=>(<div class='dept-level'>{dept}</div>)
-                                       )}</td>
+                                    <td>{employee.departments &&
+                                         employee.departments.map((department) => (
+                                        <div className="dept-label">{department}</div>
+                                        ))}</td>
                                     <td>{employee.salary}</td>
                                     <td>{employee.startDate}</td>
                                     <td>
-                                        <img id={employee.id} onClick={()=>this.deleteEmployee(employee.id)} alt="delete" src={deleteIcon} />
-                                        <img id={employee.id} onClick={()=>this.updateEmployee(employee.id)} alt="update" src={updateIcon} />
+                                    <img id={employee.employeeId} onClick={()=>this.deleteEmployee(employee.employeeId)} alt="delete" src={deleteIcon} />
+                                        <img id={employee.employeeId} onClick={()=>this.updateEmployee(employee.employeeId)} alt="update" src={updateIcon} />
 
                                     </td>
                                 </tr>
@@ -107,4 +106,4 @@ class Home extends Component{
     }
 }
 
-export default Home 
+export default withRouter(Home)
