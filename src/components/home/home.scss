@@ -34,6 +34,7 @@ body{
     letter-spacing: 0px;
     color: #82a70c;
     text-transform: capitalize;
+    margin-left: 10px;
 }
 
 .emp-payroll{color: #42515f;}
@@ -51,6 +52,8 @@ body{
     outline: none;
     cursor: pointer;
     text-decoration: none;
+    align-items:flex-end;
+    margin-left: 10px;
 }
 
 .main-content{
@@ -139,7 +142,7 @@ td img{
 }
 
 .dept-label{
-    background-color: lightgreen;
+    background-color: #E9FEA5;
     border-radius: 40%;
     width: fit-content;
     padding: 1px 7px;
@@ -150,3 +153,42 @@ td img{
     margin-bottom: 8px;
     margin-right: 4px;
 }
+
+.search-box {
+    position: relative;
+    margin-left: 53%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    border: 1px solid #ccc;
+    border-radius: 28px;
+    resize: horizontal;
+    background: white;  
+  }
+  
+  .search-input {
+    width: 75px;
+    padding: 12px;
+    border: 0px solid #ccc;
+    border-radius: 28px;
+    resize: vertical;
+    z-index: 10;
+    transition-duration: 0.4s;
+    -moz-transition-duration: 0.4s;
+    -webkit-transition-duration: 0.4s;
+    -o-transition-duration: 0.4s;
+    outline: none;
+  }
+  
+  .search-icon {
+    width: fit-content;
+    align-items: center;
+    margin-bottom: 3%;
+  }  
+  
+  .input-expand {
+    width: 120px;
+  }
+
+  

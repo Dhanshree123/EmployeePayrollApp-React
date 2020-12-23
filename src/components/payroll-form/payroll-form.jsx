@@ -8,6 +8,7 @@ import logo from '../../assets/images/logo.png';
 import {useParams,withRouter} from 'react-router-dom';
 import EmployeeService from '../../services/employee-service'
 import {Link} from 'react-router-dom';
+import { checkName,checkStartDate } from "./validations.js";
 
 class PayrollForm extends Component{
     constructor(props){
@@ -23,7 +24,10 @@ class PayrollForm extends Component{
             year: '2020',
             gender: '',
             profilePic: '',
-            departments: []
+            departments: [],
+            nameError: "",
+            departmentError: '',
+            dateError: ''
         }
         this.changeNameHandler=this.changeNameHandler.bind(this);
         this.changeSalaryHandler=this.changeSalaryHandler.bind(this);
@@ -40,9 +44,7 @@ class PayrollForm extends Component{
             return
         }else{
             EmployeeService.getEmployeeById(this.state.id).then((res) =>{
-               // console.log("Hi");
                 let employee = res.data;
-                //console.log(employee);
                 let date= employee.startDate.split("-");
                 let Updateday=date[2];
                 let Updatemonth=date[1];
@@ -67,9 +69,9 @@ class PayrollForm extends Component{
             });
         }     
     }
-    saveOrUpdateEmployee = (event) => {
+    saveOrUpdateEmployee = async(event) => {
         event.preventDefault();
-       // console.log(this.state.departments);
+       if(this.validateData(this.state)){
         let employee = {
             name: this.state.name,
             departments : this.state.departments,
@@ -80,7 +82,6 @@ class PayrollForm extends Component{
             profilePic: this.state.profilePic,
           };
         console.log('employee => ' + JSON.stringify(employee));
-      //  EmployeeService.createEmployee(employee);
       if(this.state.id === 'new'){
         EmployeeService.createEmployee(employee).then(res =>{
             this.props.history.push('/home');
@@ -91,55 +92,7 @@ class PayrollForm extends Component{
         });
     }
     }
-
-    /*
-     handleValidations = async () => {
-        let isError = false;
-        let error = {
-            department: '',
-            name: '',
-            gender: '',
-            salary: '',
-            profileUrl: '',
-            startDate: ''
-        }
-        if (!this.state.name.match('^[A-Z]{1}[a-zA-Z]{2,}')) {
-            error.name = 'Name is Invalid!!'
-            isError = true;
-        }
-        if (this.state.gender.length < 1) {
-            error.gender = 'Gender is a required field'
-            isError = true;
-        }
-        if ((this.state.salary.valueOf()<300000)||(this.state.salary.valueOf()>500000)) {
-            error.salary = 'Salary should be between 3,00,000 and 5,00,000!!'
-            isError = true;
-        }
-        if (this.state.profileUrl.length < 1) {
-            error.profileUrl = 'Profile is a required field'
-            isError = true;
-        }
-        if (this.state.departMentValue.length < 1) {
-            error.department = 'Department is a required field'
-            isError = true;
-        }
-        var day = this.state.day.valueOf();
-        var month = this.state.month.valueOf();
-        var year = this.state.year.valueOf();
-        var date = new Date(day+" "+month+" "+year);
-        var nowDate = Date.now();
-        if(date>nowDate){
-            error.startDate = "StartDate is a future Date!!"
-            isError = true;
-        }
-        if(this.state.note.length < 1){
-            error.note = "Notes is a required field"
-            isError = true;
-        }
-       // await setForm({ ...this.state, error: error })
-        return isError;
     }
-    */
     getChecked =(name) =>{
         return this.state.departments.includes(name);
     }
@@ -159,36 +112,107 @@ class PayrollForm extends Component{
     }
     changeNameHandler =(event)=>{
         this.setState({name:event.target.value});
-        //console.log("name is "+this.state.name);
+        try {
+            checkName(event.target.value);
+            this.setState({ nameError: "" });
+        } catch (error) {
+            this.setState({ nameError: error });
+        }
     }
+
+    validateData =(data)=>{
+        if(data.nameError!=""){
+            return false;
+        }
+        if(data.departments.length==0){
+            this.setState({departmentError: "Pleast Select Atleast one department"});
+            return false;
+        }
+        if(data.dateError!=""){
+            return false;
+        }
+
+        return true;
+
+    }
+
     changeSalaryHandler =(event)=>{
         this.setState({salary:event.target.value});
-        //console.log("salary chosen is"+this.state.salary);
     }
     changeNoteHandler =(event)=>{
         this.setState({note: event.target.value});
-        //console.log("note entered is "+this.state.note);
     }
     changeGenderHandler =(event)=>{
 
         this.setState({gender: event.target.value});
-        //console.log("gender is" + this.state.gender);
     }
     changeProfilePicHandler =(event)=>{
         this.setState({profilePic: event.target.value});
-       // console.log("profilepic is "+this.state.profilePic);
     }
     changeDayHandler=(event)=>{
         this.setState({day:event.target.value});
-       // console.log("day entered is"+this.state.day);
+        try {
+            checkStartDate(
+              new Date(
+                this.state.year,
+                this.state.month - 1,
+                event.target.value
+              )
+            );
+            this.setState({ dateError: "" });
+          } catch (error) {
+            this.setState({ dateError: error });
+          }
     }
     changeMonthHandler=(event)=>{
         this.setState({month:event.target.value});
-        //console.log("month entered is"+this.state.month);
+        try {
+            checkStartDate(
+              new Date(this.state.year, event.target.value - 1, this.state.day)
+            );
+            this.setState({ dateError: "" });
+          } catch (error) {
+            this.setState({ dateError: error });
+          }
     }
     changeYearHandler=(event)=>{
         this.setState({year:event.target.value});
-        //console.log("year entered is "+this.state.year);
+        try {
+            checkStartDate(
+              new Date(event.target.value, this.state.month - 1, this.state.day)
+            );
+            this.setState({ dateError: "" });
+          } catch (error) {
+            this.setState({ dateError: error });
+          }
+    }
+    allFieldCorrect =()=>{
+        if(this.state.nameError!="")
+        return false;
+        if(this.state.departmentError!="")
+        return false;
+        if(this.state.dateError!="")
+        return false;
+        if(this.state.name=="")
+        return false;
+        if(this.state.gender=="")
+        return false;
+        if(this.state.salary=="")
+        return false;
+        if(this.state.profilePic=="")
+        return false;
+        if(this.state.day=="")
+        return false;
+        if(this.state.month=="")
+        return false;
+        if(this.state.year=="")
+        return false;
+        if(this.state.notes=="")
+        return false;
+        if(this.state.departments.length==0)
+        return false;
+
+        return true;
     }
     cancel(){
         // this.props.history.push('/employees');
@@ -214,6 +238,7 @@ class PayrollForm extends Component{
                         <div class="row-content">
                             <label class="label text" for="name">Name</label>
                             <input class="input" value={this.state.name} onChange={this.changeNameHandler} type="text" id="name" name="name" placeholder="Enter Your name" required />
+                            <error-output class="text-error" for="text" value={this.state.nameError}>{this.state.nameError}</error-output>
                         </div>
                         <div class="row-content">
                             <label class="label text" for="profile">Profile image</label>
@@ -262,6 +287,7 @@ class PayrollForm extends Component{
                                 <label class="text" for="engineer">Engineer</label>
                                 <input class="checkbox" type="checkbox" id="others" name="department" value="Others" checked={this.state.departments.includes("Others")} onChange={this.onCheckChange}/>
                                 <label class="text" for="others">Others</label>
+                                <error-output class="text-error" for="text" value={this.state.departmentError}>{this.state.departmentError}</error-output>
                             </div>
                         </div>
                         <div class="row-content">
@@ -328,6 +354,7 @@ class PayrollForm extends Component{
                                 <option value="2016">2016</option>
                             </select>
                         </div>
+                        <error-output class="text-error" for="text" value={this.state.dateError}>{this.state.dateError}</error-output>
                     </div>
                     <div class="row-content">
                         <label class="label text" for="note">Notes</label>
@@ -336,7 +363,7 @@ class PayrollForm extends Component{
                     <div class="buttonParent">
                         <Link to="/home" class="resetButton button cancelButton">Cancel</Link>
                         <div class="submit-reset">
-                            <button type="submit" class="button submitButton" id="submitButton" onClick={this.saveOrUpdateEmployee}>Submit</button>
+                        <button type="submit" class="button submitButton" disabled={!this.allFieldCorrect()} id="submitButton" onClick={this.saveOrUpdateEmployee}>Submit</button>
                             <button type="reset" class="resetButton button">Reset</button>
                         </div>
                     </div>
